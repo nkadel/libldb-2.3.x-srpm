@@ -4,12 +4,12 @@
 %endif
 
 %define talloc_version 2.0.7
-%define tdb_version 1.2.10
+%define tdb_version 1.2.11
 %define tevent_version 0.9.15
 
 Name: libldb
 Version: 1.1.13
-Release: 1%{?dist}
+Release: 0.2%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc >= %{talloc_version}
@@ -177,6 +177,12 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
+* Sun Feb 10 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.13-0.2
+- Update libtdb requirement to 1.2.11 for Samba 4.0.3 on RHEL 6
+
+* Fri Feb 08 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.13-0.1
+- Roll old release for RHEL 6
+
 * Wed Oct 03 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.1.13-1
 - New upstream release 1.1.13
 
