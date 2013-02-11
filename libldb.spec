@@ -3,12 +3,12 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%define talloc_version 2.0.7
+%define talloc_version 2.0.8
 %define tdb_version 1.2.11
-%define tevent_version 0.9.15
+%define tevent_version 0.9.17
 
 Name: libldb
-Version: 1.1.13
+Version: 1.1.15
 Release: 0.2%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
@@ -177,11 +177,21 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
-* Sun Feb 10 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.13-0.2
-- Update libtdb requirement to 1.2.11 for Samba 4.0.3 on RHEL 6
+* Sun Feb 10 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.15-0.2
+- Roll back older numbered version for Fedora 18 and RHEL 6.
 
-* Fri Feb 08 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.13-0.1
-- Roll old release for RHEL 6
+* Thu Feb 07 2013 Jakub Hrozek <jhrozek@redhat.com> - 1.1.15-2
+- The 1.1.15 rebase obsoletes the patch from 1.1.14-2
+
+* Thu Feb 07 2013 Jakub Hrozek <jhrozek@redhat.com> - 1.1.15-1
+- New upstream release 1.1.15
+
+* Wed Jan 30 2013 Jakub Hrozek <jhrozek@redhat.com> - 1.1.14-2
+- Add patch by Stephen Gallagher to include manual pages for
+  ldb_connect() and several other functions.
+
+* Sat Dec 01 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.1.14-1
+- New upstream release 1.1.14
 
 * Wed Oct 03 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.1.13-1
 - New upstream release 1.1.13
