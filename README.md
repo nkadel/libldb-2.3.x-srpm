@@ -1,7 +1,7 @@
-libldb-1.1.15srpm
+libldb-1.1.16-srpm
 =================
 
-SRPM building tools for libldb-1.1.15 for runing Samba 4 on RHEL 6.
+SRPM building tools for libldb-1.1.16 for runing Samba 4 on RHEL 6.
 =======
 
 Required rebuild with libtdb updates for Samba.
