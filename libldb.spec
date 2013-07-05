@@ -4,7 +4,7 @@
 %endif
 
 %define talloc_version 2.0.8
-%define tdb_version 1.2.11
+%define tdb_version 1.2.12
 %define tevent_version 0.9.17
 
 Name: libldb
