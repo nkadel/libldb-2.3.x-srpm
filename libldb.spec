@@ -8,8 +8,8 @@
 %define tevent_version 0.9.17
 
 Name: libldb
-Version: 1.1.15
-Release: 0.2%{?dist}
+Version: 1.1.16
+Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc >= %{talloc_version}
@@ -177,6 +177,9 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
+* Thu Jul  4 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.16-0.1
+- Update to 1.1.16.
+
 * Sun Feb 10 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.15-0.2
 - Roll back older numbered version for Fedora 18 and RHEL 6.
 
