@@ -3,12 +3,12 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%define talloc_version 2.0.8
-%define tdb_version 1.2.12
-%define tevent_version 0.9.17
+%define talloc_version 2.1.1
+%define tdb_version 1.3.0
+%define tevent_version 0.9.21
 
 Name: libldb
-Version: 1.1.16
+Version: 1.1.17
 Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
@@ -17,7 +17,7 @@ Requires: libtdb >= %{tdb_version}
 Requires: libtevent >= %{tevent_version}
 License: LGPLv3+
 URL: http://ldb.samba.org/
-Source: http://samba.org/ftp/ldb/ldb-%{version}.tar.gz
+Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 BuildRequires: libtalloc-devel >= %{talloc_version}
 BuildRequires: libtdb-devel >= %{tdb_version}
@@ -177,10 +177,14 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
-* Thu Jul  4 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.16-0.1
+* Mon Jun 23 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.17-0.1
+- Update to 1.1.17.
+- Update libtalloc, libtevent, etc. dependencies.
+
+* Thu Jul  4 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.16-0.1
 - Update to 1.1.16.
 
-* Sun Feb 10 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.15-0.2
+* Sun Feb 10 2013 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.15-0.2
 - Roll back older numbered version for Fedora 18 and RHEL 6.
 
 * Thu Feb 07 2013 Jakub Hrozek <jhrozek@redhat.com> - 1.1.15-2
