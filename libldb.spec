@@ -8,8 +8,8 @@
 %define tevent_version 0.9.22
 
 Name: libldb
-Version: 1.1.17
-Release: 0.2%{?dist}
+Version: 1.1.18
+Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc >= %{talloc_version}
@@ -177,8 +177,11 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
+* Sat Dec 13 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.18-0.2
+- Update to 1.1.18
+
 * Fri Nov  7 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.17-0.2
-- Udpate requirements for tdb_version and tevent_version.
+- Update requirements for tdb_version and tevent_version.
 
 * Mon Jun 23 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.17-0.1
 - Update to 1.1.17.
