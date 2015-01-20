@@ -4,11 +4,11 @@
 %endif
 
 %define talloc_version 2.1.1
-%define tdb_version 1.3.3
+%define tdb_version 1.3.4
 %define tevent_version 0.9.22
 
 Name: libldb
-Version: 1.1.18
+Version: 1.1.19
 Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
@@ -177,8 +177,12 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
+* Fri Jan 16 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.19-0.1
+- Update to 1.1.19
+
 * Sat Dec 13 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.18-0.2
 - Update to 1.1.18
+- Update libtdb requirement to 1.3.3
 
 * Fri Nov  7 2014 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.17-0.2
 - Update requirements for tdb_version and tevent_version.
