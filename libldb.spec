@@ -8,7 +8,7 @@
 %define tevent_version 0.9.22
 
 Name: libldb
-Version: 1.1.19
+Version: 1.1.20
 Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
@@ -177,6 +177,9 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
+* Sat Feb 28 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.20-0.1
+- Update to 1.1.20
+
 * Fri Jan 16 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.19-0.1
 - Update to 1.1.19
 
