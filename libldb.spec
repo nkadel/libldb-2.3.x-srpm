@@ -3,9 +3,9 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%define talloc_version 2.1.1
+%define talloc_version 2.1.2
 %define tdb_version 1.3.4
-%define tevent_version 0.9.22
+%define tevent_version 0.9.24
 
 Name: libldb
 Version: 1.1.20
