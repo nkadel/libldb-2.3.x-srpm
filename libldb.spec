@@ -3,12 +3,12 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%define talloc_version 2.1.2
-%define tdb_version 1.3.4
+%define talloc_version 2.1.3
+%define tdb_version 1.3.7
 %define tevent_version 0.9.24
 
 Name: libldb
-Version: 1.1.20
+Version: 1.1.21
 Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
@@ -177,6 +177,9 @@ rm -rf %{buildroot}
 %postun -n pyldb -p /sbin/ldconfig
 
 %changelog
+* Sat Sep  5 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.21-0.1
+- Update to 1.1.21
+
 * Sat Feb 28 2015 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.20-0.1
 - Update to 1.1.20
 
