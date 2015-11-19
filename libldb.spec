@@ -227,7 +227,7 @@ rm -rf %{buildroot}
 * Tue Aug 28 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.1.11-1
 - New upstream release 1.1.11
 
-* Mon Aug 10 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.1.10-1
+* Fri Aug 10 2012 Jakub Hrozek <jhrozek@redhat.com> - 1.1.10-1
 - New upstream release 1.1.10
 
 * Thu Aug 02 2012 Stephen Gallagher <sgallagh@redhat.com> - 1.1.9-1
