@@ -4,11 +4,11 @@
 %endif
 
 %define talloc_version 2.1.8
-%define tdb_version 1.3.11
-%define tevent_version 0.9.30
+%define tdb_version 1.3.12
+%define tevent_version 0.9.31
 
 Name: libldb
-Version: 1.1.27
+Version: 1.1.29
 Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
