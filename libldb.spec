@@ -37,6 +37,7 @@ BuildRequires: python-tdb
 BuildRequires: pytalloc-devel
 BuildRequires: python-tevent
 BuildRequires: doxygen
+BuildRequires: libcmocka-devel >= 1.1.1
 
 Provides: bundled(libreplace)
 Provides: bundled(libtdb_compat)
@@ -180,6 +181,7 @@ rm -rf %{buildroot}
 %changelog
 * Sun Sep 18 2016 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.27-0.1
 - Update to 1.1.27
+- Add libcmocka-devel BuildRequires dependency
 
 * Sun Apr 10 2016 Nico Kadel-Garcia <nkadel@gmail.com> - 1.1.26-0.1
 - Update to 1.1.26
