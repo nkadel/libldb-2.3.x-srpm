@@ -5,8 +5,10 @@
 # Assure that sorting is case sensitive
 LANG=C
 
-MOCKS+=samba4repo-f25-x86_64
+MOCKS+=samba4repo-f27-x86_64
 MOCKS+=samba4repo-7-x86_64
+# Give up on RHEL 6, too many upstream dependencies
+#MOCKS+=samba4repo-6-x86_64
 
 #REPOBASEDIR=/var/www/linux/samba4repo
 REPOBASEDIR:=`/bin/pwd`/../samba4repo
