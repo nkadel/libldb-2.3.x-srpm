@@ -3,12 +3,12 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%define talloc_version 2.1.8
-%define tdb_version 1.3.12
-%define tevent_version 0.9.31
+%define talloc_version 2.1.11
+%define tdb_version 1.3.15
+%define tevent_version 0.9.36
 
 Name: libldb
-Version: 1.1.29
+Version: 1.3.2
 Release: 0.1%{?dist}
 Group: Development/Libraries
 Summary: A schema-less, ldap like, API and database
