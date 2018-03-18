@@ -1,7 +1,7 @@
-libldb-1.1.x-srpm
+libldb-1.3.x-srpm
 =================
 
-SRPM building tools for libldb-1.1.x for runing Samba 4 on RHEL 6.
+SRPM building tools for libldb-1.3.x for runing Samba 4 on RHEL 7 and Fedora
 =======
 
 Required rebuild with libtdb updates for Samba.
@@ -13,10 +13,10 @@ installed in the following order.
 
 	libtalloc-2.1.x-srpm
 	libtdb-1.3.x-srpm
-	libldb-1.1.x-srpm
+	libldb-1.3.x-srpm
 	libtevent-0.9.x-srpm
 
-	samba-4.1.x-srpm
+	samba-4.8.x-srpm
 
 The "make" command will do these steps.
 
