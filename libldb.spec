@@ -20,8 +20,8 @@ Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
-URL: http://ldb.samba.org/
-Source: http://samba.org/ftp/ldb/ldb-%{version}.tar.gz
+URL: https://ldb.samba.org/
+Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 BuildRequires: libtalloc-devel >= %{talloc_version}
 BuildRequires: libtdb-devel >= %{tdb_version}
