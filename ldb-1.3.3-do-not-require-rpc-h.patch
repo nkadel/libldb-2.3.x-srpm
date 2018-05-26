@@ -1,0 +1,13 @@
+diff -up ldb-1.3.3/lib/replace/wscript.rpc_h ldb-1.3.3/lib/replace/wscript
+--- ldb-1.3.3/lib/replace/wscript.rpc_h	2018-05-03 11:54:21.723499442 +0200
++++ ldb-1.3.3/lib/replace/wscript	2018-05-03 11:54:42.964564273 +0200
+@@ -90,8 +90,7 @@ def configure(conf):
+             conf.CHECK_HEADERS('rpc/rpc.h rpc/nettype.h', lib='tirpc', together=True)
+             conf.SET_TARGET_TYPE('tirpc', 'SYSLIB')
+     if not conf.CONFIG_SET('HAVE_RPC_RPC_H'):
+-            Logs.error('ERROR: No rpc/rpc.h header found, tirpc or libntirpc missing?')
+-            sys.exit(1)
++            Logs.warn('No rpc/rpc.h header found, tirpc or libntirpc missing?')
+ 
+     conf.SET_TARGET_TYPE('nsl', 'EMPTY')
+     conf.CHECK_HEADERS('rpc/rpc.h rpcsvc/yp_prot.h', lib='tirpc')
