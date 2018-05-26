@@ -2,13 +2,13 @@
 %{!?python2_sitelib:  %global python2_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %global with_python3 1
 %else
 %global with_python3 0
 %endif
 
-%global talloc_version 2.1.11
+%global talloc_version 2.1.13
 %global tdb_version 1.3.15
 %global tevent_version 0.9.36
 
@@ -23,13 +23,14 @@ License: LGPLv3+
 URL: https://ldb.samba.org/
 Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
+BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
 BuildRequires: libtdb-devel >= %{tdb_version}
 BuildRequires: libtevent-devel >= %{tevent_version}
 BuildRequires: popt-devel
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
-BuildRequires: python-devel
+BuildRequires: python2-devel
 BuildRequires: python2-tdb
 BuildRequires: python2-talloc-devel
 BuildRequires: python2-tevent
@@ -47,6 +48,8 @@ BuildRequires: python3-tevent
 %endif
 
 # Patches
+Patch0001: 0001-ldb-Fix-memory-leak-on-module-context.patch
+Patch0002: ldb-1.3.3-do-not-require-rpc-h.patch
 
 %description
 An extensible library that implements an LDAP like API to access remote LDAP
@@ -132,6 +135,8 @@ Development files for the Python bindings for the LDB library
 
 %prep
 %setup -q -n ldb-%{version}
+%patch0001 -p3
+%patch0002 -p1
 
 %build
 
@@ -140,6 +145,9 @@ PY3_CONFIG_FLAGS=--extra-python=%{__python3}
 %else
 PY3_CONFIG_FLAGS=""
 %endif
+
+# workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1217376
+export python_LDFLAGS=""
 
 %configure --disable-rpath \
            --disable-rpath-install \
@@ -171,9 +179,7 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # file path
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files
 %dir %{_libdir}/ldb
@@ -222,8 +228,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_includedir}/pyldb.h
 %{_mandir}/man*/Py*.gz
 
-%post -n python2-ldb -p /sbin/ldconfig
-%postun -n python2-ldb -p /sbin/ldconfig
+%ldconfig_scriptlets -n python2-ldb
 
 %if 0%{?with_python3}
 
@@ -237,17 +242,61 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-%post -n python3-ldb -p /sbin/ldconfig
-%postun -n python3-ldb -p /sbin/ldconfig
+%ldconfig_scriptlets -n python3-ldb
 
 %endif
 
 %changelog
-* Sun May 20 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.3-0.1
+* Fri May 25 2018 Nico Kadel-Garcia <nkadel@gmail.com<> - 1.3.3-0.1
 - Update to 1.3.3
+- Update talloc dependency to 2.1.13
 
-* Sat Mar 17 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.3.2-0.1
-- Update to 1.3.2
+* Thu May  3 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.3.2-1
+- New upstream release 1.3.3
+- Resolves: rhbz#1574267 - libldb-1.3.3 is available
+- Backport a patch from samba upstream to not require rpc.h
+
+* Thu Mar 01 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.2-2
+- Disable link time optimisation for python3 related modules/libs
+- Workaround for rhbz#1548822
+
+* Thu Mar 01 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.2-1
+- New upstream release 1.3.2
+- Resolves: rhbz#1550051 - libldb-1.3.2 is available
+
+* Mon Feb 26 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.1-6
+- Use ldconfig scriptlets
+- Add gcc to BuildRequires
+
+* Sat Feb 24 2018 Florian Weimer <fweimer@redhat.com> - 1.3.1-5
+- Another rebuild with new build flags
+
+* Sat Feb 24 2018 Florian Weimer <fweimer@redhat.com> - 1.3.1-4
+- Rebuild to pick up new Python build flags
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Sat Jan 20 2018 Björn Esser <besser82@fedoraproject.org> - 1.3.1-2
+- Rebuilt for switch to libxcrypt
+
+* Sat Jan 13 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.1
+- New upstream release 1.3.1
+- Resolves: rhbz#1534128 - libldb-1.3.1 is available
+
+* Tue Jan 09 2018 Iryna Shcherbina <ishcherb@redhat.com> - 1.3.0-4
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
+* Thu Nov 30 2017 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.0-3
+- Update spec file conditionals
+
+* Sat Oct 21 2017 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.3.0-2
+- Fix memory leak introduced in 1.3.0
+
+* Fri Oct 20 2017 Lukas Slebodnik <lslebodn@redhat.com> - 1.3.0
+- New upstream release 1.3.0
+- Resolves: rhbz#1504361 - libldb-1.3.0 is available
 
 * Mon Sep 11 2017 Lukas Slebodnik <lslebodn@redhat.com> - 1.2.2
 - New upstream release 1.2.2
