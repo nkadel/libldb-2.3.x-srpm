@@ -1,7 +1,7 @@
-libldb-1.3.x-srpm
+libldb-1.4.x-srpm
 =================
 
-SRPM building tools for libldb-1.3.x for runing Samba 4 on RHEL 7 and Fedora
+SRPM building tools for libldb-1.4.x for runing Samba 4 on RHEL 7 and Fedora
 =======
 
 Required rebuild with libtdb updates for Samba.
