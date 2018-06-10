@@ -12,8 +12,8 @@ installed in the following order.
 	iniparser-3.1-srpm
 
 	libtalloc-2.1.x-srpm
-	libtdb-1.3.x-srpm
-	libldb-1.3.x-srpm
+	libtdb-1.4.x-srpm
+	libldb-1.4.x-srpm
 	libtevent-0.9.x-srpm
 
 	samba-4.8.x-srpm
