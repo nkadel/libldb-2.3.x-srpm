@@ -14,8 +14,7 @@
 
 Name: libldb
 Version: 1.4.0
-#Release: 1%{?dist}
-Release: 0.1%{?dist}
+Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -254,10 +253,6 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
-* Sun Jun 10 2018 Nico Kadel-Garcia <nkadel@gmail.com>
-- Roll release back to 0.1
-- Flush use of apostrophes in .spec file
-
 * Wed May 30 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.4.0-1
 - New upstream release 1.4.0
 - Resolves: rhbz#1584450 - libldb-1.4.0 is available
