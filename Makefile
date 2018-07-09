@@ -41,8 +41,7 @@ $(MOCKS):: verifyspec FORCE
 		rm -rf $@; \
 		mock -q -r $(PWD)/../$@.cfg \
 		    --resultdir=$(PWD)/$@ \
-		    --sources=$(PWD) \
-		    --buildsrpm --spec=$(SPEC); \
+		    --sources=$(PWD) --buildsrpm --spec=$(SPEC); \
 		echo "Storing $@/*.src.rpm in $@.rpm"; \
 		/bin/mv $@/*.src.rpm $@.src.rpm; \
 		echo "Actally building RPMS in $@"; \
