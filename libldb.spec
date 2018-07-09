@@ -180,7 +180,12 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # file path
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
+%if 0%{?fedora} > 0
 %ldconfig_scriptlets
+%else
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+%endif
 
 %files
 %dir %{_libdir}/ldb
@@ -234,7 +239,12 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_includedir}/pyldb.h
 %{_mandir}/man*/Py*.gz
 
+%if 0%{?fedora} > 0
 %ldconfig_scriptlets -n python2-ldb
+%else
+%post -n python2-ldb -p /sbin/ldconfig
+%postun -n python2-ldb -p /sbin/ldconfig
+%endif
 
 %if 0%{?with_python3}
 
@@ -248,11 +258,19 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
+%if 0%{?fedora} > 0
 %ldconfig_scriptlets -n python3-ldb
+%else
+%post -n python3-ldb -p /sbin/ldconfig
+%postun -n python3-ldb -p /sbin/ldconfig
+%endif
 
 %endif
 
 %changelog
+* Sat Jul 7 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.0=0
+- Use ldconfig_scriptlets only for Fedora
+
 * Wed May 30 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.4.0-1
 - New upstream release 1.4.0
 - Resolves: rhbz#1584450 - libldb-1.4.0 is available
