@@ -1,0 +1,20 @@
+diff -up ldb-1.4.1/buildtools/wafsamba/samba_abi.py.sym_hide ldb-1.4.1/buildtools/wafsamba/samba_abi.py
+--- ldb-1.4.1/buildtools/wafsamba/samba_abi.py.sym_hide	2018-07-12 15:55:14.973747103 +0200
++++ ldb-1.4.1/buildtools/wafsamba/samba_abi.py	2018-07-12 15:55:42.205887380 +0200
+@@ -192,10 +192,12 @@ def abi_write_vscript(f, libname, curren
+             f.write("\t\t%s;\n" % x)
+     else:
+         f.write("\t\t*;\n")
+-    if abi_match != ["*"]:
+-        f.write("\tlocal:\n")
+-        for x in local_abi:
+-            f.write("\t\t%s;\n" % x[1:])
++    # Always hide symbols that must be local if exist
++    local_abi.extend(["!_end", "!_bss_start", "!_edata"])
++    f.write("\tlocal:\n")
++    for x in local_abi:
++        f.write("\t\t%s;\n" % x[1:])
++    if global_abi != ["*"]:
+         if len(global_abi) > 0:
+             f.write("\t\t*;\n")
+     f.write("};\n")

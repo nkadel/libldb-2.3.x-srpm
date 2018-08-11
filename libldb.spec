@@ -8,20 +8,20 @@
 %global with_python3 0
 %endif
 
-%global talloc_version 2.1.13
-%global tdb_version 1.3.15
+%global talloc_version 2.1.11
+%global tdb_version 1.3.14
 %global tevent_version 0.9.36
 
 Name: libldb
-Version: 1.4.0
+Version: 1.4.1
 Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
-URL: https://ldb.samba.org/
-Source: https://samba.org/ftp/ldb/ldb-%{version}.tar.gz
+URL: http://ldb.samba.org/
+Source: http://samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
@@ -49,8 +49,9 @@ BuildRequires: python3-tevent
 %endif
 
 # Patches
-Patch0001: 0001-ldb-Fix-memory-leak-on-module-context.patch
+Patch0001: ldb-dont-use-usr-bin-env-python.patch
 Patch0002: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
+Patch0003: ldb-hide-local-ABI-symbols.patch
 
 %description
 An extensible library that implements an LDAP like API to access remote LDAP
@@ -108,7 +109,7 @@ Provides: pyldb-devel%{?_isa} = %{version}-%{release}
 
 %description -n python-ldb-devel-common
 Development files for the Python bindings for the LDB library.
-This package includes files that are not specific to a Python version.
+This package includes files that aren't specific to a Python version.
 
 %if 0%{?with_python3}
 
@@ -136,8 +137,9 @@ Development files for the Python bindings for the LDB library
 
 %prep
 %setup -q -n ldb-%{version}
-%patch0001 -p3
+%patch0001 -p1
 %patch0002 -p3
+%patch0003 -p1
 
 %build
 
@@ -180,12 +182,7 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # file path
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
-%if 0%{?fedora} > 0
 %ldconfig_scriptlets
-%else
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-%endif
 
 %files
 %dir %{_libdir}/ldb
@@ -239,12 +236,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_includedir}/pyldb.h
 %{_mandir}/man*/Py*.gz
 
-%if 0%{?fedora} > 0
 %ldconfig_scriptlets -n python2-ldb
-%else
-%post -n python2-ldb -p /sbin/ldconfig
-%postun -n python2-ldb -p /sbin/ldconfig
-%endif
 
 %if 0%{?with_python3}
 
@@ -258,18 +250,22 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-%if 0%{?fedora} > 0
 %ldconfig_scriptlets -n python3-ldb
-%else
-%post -n python3-ldb -p /sbin/ldconfig
-%postun -n python3-ldb -p /sbin/ldconfig
-%endif
 
 %endif
 
 %changelog
-* Sat Jul 7 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.0=0
-- Use ldconfig_scriptlets only for Fedora
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.1-1
+- New upstream release 1.4.1
+- Apply a patch to hide local ABI symbols to avoid issues with new binutils
+- Patch the waf script to explicitly call python2 as "env python" doesn't
+  yield py2 anymore
+
+* Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.4.0-2
+- Rebuilt for Python 3.7
 
 * Wed May 30 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.4.0-1
 - New upstream release 1.4.0
