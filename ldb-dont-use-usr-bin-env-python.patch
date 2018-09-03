@@ -1,9 +1,0 @@
-diff -up ldb-1.4.1/buildtools/bin/waf.envpy ldb-1.4.1/buildtools/bin/waf
---- ldb-1.4.1/buildtools/bin/waf.envpy	2018-07-12 15:49:36.583918103 +0200
-+++ ldb-1.4.1/buildtools/bin/waf	2018-07-12 15:50:09.572115218 +0200
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/usr/bin/python2
- # encoding: ISO-8859-1
- # Thomas Nagy, 2005-2010
- 

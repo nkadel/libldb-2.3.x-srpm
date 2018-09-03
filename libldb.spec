@@ -13,7 +13,7 @@
 %global tevent_version 0.9.36
 
 Name: libldb
-Version: 1.4.1
+Version: 1.4.2
 Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
@@ -49,9 +49,7 @@ BuildRequires: python3-tevent
 %endif
 
 # Patches
-Patch0001: ldb-dont-use-usr-bin-env-python.patch
-Patch0002: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
-Patch0003: ldb-hide-local-ABI-symbols.patch
+Patch0001: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
 
 %description
 An extensible library that implements an LDAP like API to access remote LDAP
@@ -137,9 +135,7 @@ Development files for the Python bindings for the LDB library
 
 %prep
 %setup -q -n ldb-%{version}
-%patch0001 -p1
-%patch0002 -p3
-%patch0003 -p1
+%patch0001 -p3
 
 %build
 
@@ -151,6 +147,13 @@ PY3_CONFIG_FLAGS=""
 
 # workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1217376
 export python_LDFLAGS=""
+
+# RHEL lacks 
+%if 0%{?fedora} || 0%{?rhel} > 7
+pathfix.py -n -p -i %{__python2} buildtools/bin/waf
+%else
+sed -i.python2 "s|^#!/usr/bin/env python|#!/usr/bin/python2|g" buildtools/bin/waf
+%endif
 
 %configure --disable-rpath \
            --disable-rpath-install \
@@ -255,6 +258,10 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Mon Sep 3 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0
+- Renumber to 1.4.2-0
+- Add sed workaround for missing pathfix.py for RHEL
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
