@@ -14,14 +14,14 @@
 
 Name: libldb
 Version: 1.4.2
-Release: 0%{?dist}
+Release: 0.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
 URL: http://ldb.samba.org/
-Source: http://samba.org/ftp/ldb/ldb-%{version}.tar.gz
+Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
@@ -258,6 +258,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0.1
+- Update Source URL
+
 * Mon Sep 3 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0
 - Renumber to 1.4.2-0
 - Add sed workaround for missing pathfix.py for RHEL
