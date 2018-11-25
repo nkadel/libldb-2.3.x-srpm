@@ -185,6 +185,9 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # file path
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
+# Flush build-id reckage
+rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
+
 %ldconfig_scriptlets
 
 %files
@@ -260,6 +263,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %changelog
 * Thu Nov 8 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
 - Update to 1.4.3
+- Flush build-id
 
 * Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0.1
 - Update Source URL
