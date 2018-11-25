@@ -13,8 +13,8 @@
 %global tevent_version 0.9.36
 
 Name: libldb
-Version: 1.4.2
-Release: 0.2%{?dist}
+Version: 1.4.3
+Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -185,6 +185,9 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # file path
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
+# Flush build-id reckage
+rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
+
 %if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets
 %endif # fedora || rhel > 7
@@ -264,8 +267,10 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif # with_python3
 
 %changelog
-* Sun Nov 25 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0.2
+* Sun Nov 25 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
+- Update to 1.4.3
 - Enable ldconfig_scriptets only for fedora || el > 7
+- Flush build-id
 
 * Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0.1
 - Update Source URL
