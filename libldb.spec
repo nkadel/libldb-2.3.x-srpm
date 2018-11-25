@@ -190,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets
+%else
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 %endif # fedora || rhel > 7
 
 %files
@@ -246,7 +249,10 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets -n python2-ldb
-%endif
+%else
+%post -n python2-ldb -p /sbin/ldconfig
+%postun -n python2-ldb -p /sbin/ldconfig
+%endif # fedora || rhel > 7
 
 %if 0%{?with_python3}
 
@@ -262,6 +268,8 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets -n python3-ldb
+%post -n python3-ldb -p /sbin/ldconfig
+%postun -n python3-ldb -p /sbin/ldconfig
 %endif # fedora || rhel > 7
 
 %endif # with_python3
