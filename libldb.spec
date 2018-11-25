@@ -14,7 +14,7 @@
 
 Name: libldb
 Version: 1.4.2
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -107,7 +107,7 @@ Provides: pyldb-devel%{?_isa} = %{version}-%{release}
 
 %description -n python-ldb-devel-common
 Development files for the Python bindings for the LDB library.
-This package includes files that aren't specific to a Python version.
+This package includes files that are not specific to a Python version.
 
 %if 0%{?with_python3}
 
@@ -185,7 +185,9 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # file path
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
+%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets
+%endif # fedora || rhel > 7
 
 %files
 %dir %{_libdir}/ldb
@@ -239,7 +241,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_includedir}/pyldb.h
 %{_mandir}/man*/Py*.gz
 
+%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets -n python2-ldb
+%endif
 
 %if 0%{?with_python3}
 
@@ -253,11 +257,16 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
+%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets -n python3-ldb
+%endif # fedora || rhel > 7
 
-%endif
+%endif # with_python3
 
 %changelog
+* Sun Nov 25 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0.2
+- Enable ldconfig_scriptets only for fedora || el > 7
+
 * Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0.1
 - Update Source URL
 
@@ -271,7 +280,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 * Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.1-1
 - New upstream release 1.4.1
 - Apply a patch to hide local ABI symbols to avoid issues with new binutils
-- Patch the waf script to explicitly call python2 as "env python" doesn't
+- Patch the waf script to explicitly call python2 as "env python" does not
   yield py2 anymore
 
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.4.0-2
