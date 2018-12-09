@@ -20,7 +20,7 @@ Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
-URL: http://ldb.samba.org/
+URL: https://ldb.samba.org/
 Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 BuildRequires: gcc
@@ -188,6 +188,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 # Flush build-id reckage
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 
+#ldconfig_scriptlets not compatible with RHEL
 %if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets
 %else
@@ -268,6 +269,7 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets -n python3-ldb
+%else
 %post -n python3-ldb -p /sbin/ldconfig
 %postun -n python3-ldb -p /sbin/ldconfig
 %endif # fedora || rhel > 7
@@ -462,7 +464,7 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 - New upstream release 1.1.17
 
 * Thu Jan 02 2014 Stephen Gallagher <sgallagh@redhat.com> - 1.1.16-4
-- Enable building libldb's LDAP interface module
+- Enable building libldb LDAP interface module
 
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.16-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
