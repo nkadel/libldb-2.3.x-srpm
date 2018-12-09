@@ -14,7 +14,7 @@
 
 Name: libldb
 Version: 1.4.3
-Release: 0%{?dist}
+Release: 0.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -277,6 +277,9 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 %endif # with_python3
 
 %changelog
+* Sun Nov 25 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
+- Repair usage of ldconfig for multiple packages
+
 * Sun Nov 25 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
 - Update to 1.4.3
 - Enable ldconfig_scriptets only for fedora || el > 7
