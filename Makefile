@@ -7,8 +7,7 @@ LANG=C
 
 # Fedora 29 has recent libldb
 #MOCKS+=samba4repo-f29-x86_64
-# RHEl 7 needs older libldb for Samba 4.8
-#MOCKS+=samba4repo-7-x86_64
+MOCKS+=samba4repo-7-x86_64
 
 #REPOBASEDIR=/var/www/linux/samba4repo
 REPOBASEDIR:=`/bin/pwd`/../samba4repo
