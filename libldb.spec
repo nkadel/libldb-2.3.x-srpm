@@ -37,7 +37,7 @@ BuildRequires: python2-talloc-devel
 BuildRequires: python2-tevent
 BuildRequires: doxygen
 BuildRequires: openldap-devel
-BuildRequires: libcmocka-devel
+BuildRequires: libcmocka-devel >= 1.1.1
 
 Provides: bundled(libreplace)
 
