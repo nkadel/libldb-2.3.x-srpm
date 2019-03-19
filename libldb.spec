@@ -2,18 +2,37 @@
 %{!?python2_sitelib:  %global python2_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
-%if 0%{?fedora} || 0%{?rhel} > 7
-%global with_python3 1
+# lmdb is not supported on 32 bit architectures
+%if ((0%{?fedora} || 0%{?epel} > 6) && 0%{?__isa_bits} == 64)
+%global with_lmdb 1
 %else
-%global with_python3 0
+%global without_lmdb_flags --without-ldb-lmdb
 %endif
 
-%global talloc_version 2.1.11
-%global tdb_version 1.3.14
-%global tevent_version 0.9.36
+%if 0%{?fedora} || 0%{?rhel} > 7
+%global with_python3 1
+%endif
+
+%if 0%{?fedora} || 0%{?rhel} < 8
+%global with_python2 1
+%endif
+
+%if (0%{?with_python2} == 1 && 0%{?with_python3} == 0)
+# We need to sent env PYTHON for python2 only build
+%global export_waf_python export PYTHON=%{__python2}
+%endif
+
+%if (0%{?with_python2} == 1 && 0%{?with_python3} == 1)
+# python3 is default and therefore python2 need to be set as extra-python
+%global extra_python --extra-python=%{__python2}
+%endif
+
+%global talloc_version 2.1.16
+%global tdb_version 1.3.18
+%global tevent_version 0.9.39
 
 Name: libldb
-Version: 1.4.3
+Version: 1.5.4
 Release: 0.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
@@ -21,35 +40,38 @@ Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
 URL: https://ldb.samba.org/
-Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
+Source: https://samba.org/ftp/ldb/ldb-%{version}.tar.gz
+
+# Patches
+Patch0001: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
 
 BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
 BuildRequires: libtdb-devel >= %{tdb_version}
 BuildRequires: libtevent-devel >= %{tevent_version}
+%if 0%{?with_lmdb}
 BuildRequires: lmdb-devel >= 0.9.16
+%endif
 BuildRequires: popt-devel
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
+%if 0%{?with_python2}
 BuildRequires: python2-devel
 BuildRequires: python2-tdb
 BuildRequires: python2-talloc-devel
 BuildRequires: python2-tevent
-BuildRequires: doxygen
-BuildRequires: openldap-devel
-BuildRequires: libcmocka-devel >= 1.1.1
-
-Provides: bundled(libreplace)
-
+%endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel
 BuildRequires: python3-tdb
 BuildRequires: python3-talloc-devel
 BuildRequires: python3-tevent
 %endif
+BuildRequires: doxygen
+BuildRequires: openldap-devel
+BuildRequires: libcmocka-devel
 
-# Patches
-Patch0001: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
+Provides: bundled(libreplace)
 
 %description
 An extensible library that implements an LDAP like API to access remote LDAP
@@ -68,11 +90,11 @@ Requires: libldb%{?_isa} = %{version}-%{release}
 Requires: libtdb-devel%{?_isa} >= %{tdb_version}
 Requires: libtalloc-devel%{?_isa} >= %{talloc_version}
 Requires: libtevent-devel%{?_isa} >= %{tevent_version}
-Requires: pkgconfig
 
 %description devel
 Header files needed to develop programs that link against the LDB library.
 
+%if 0%{?with_python2}
 %package -n python2-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
@@ -98,6 +120,7 @@ Obsoletes: pyldb-devel < 1.1.26-2
 
 %description -n python2-ldb-devel
 Development files for the Python bindings for the LDB library
+%endif
 
 %package -n python-ldb-devel-common
 Summary: Common development files for the Python bindings for the LDB library
@@ -110,7 +133,6 @@ Development files for the Python bindings for the LDB library.
 This package includes files that are not specific to a Python version.
 
 %if 0%{?with_python3}
-
 %package -n python3-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
@@ -130,78 +152,53 @@ Requires: python-ldb-devel-common%{?_isa} = %{version}-%{release}
 
 %description -n python3-ldb-devel
 Development files for the Python bindings for the LDB library
-
 %endif
 
 %prep
-%setup -q -n ldb-%{version}
-%patch0001 -p3
+%autosetup -n ldb-%{version} -p1
 
 %build
-
-%if 0%{?with_python3}
-PY3_CONFIG_FLAGS=--extra-python=%{__python3}
-%else
-PY3_CONFIG_FLAGS=""
-%endif
 
 # workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1217376
 export python_LDFLAGS=""
 
-# RHEL lacks 
-%if 0%{?fedora} || 0%{?rhel} > 7
-pathfix.py -n -p -i %{__python2} buildtools/bin/waf
-%else
-sed -i.python2 "s|^#!/usr/bin/env python|#!/usr/bin/python2|g" buildtools/bin/waf
-%endif
-
+%{?export_waf_python}
 %configure --disable-rpath \
            --disable-rpath-install \
            --bundled-libraries=NONE \
            --builtin-libraries=replace \
            --with-modulesdir=%{_libdir}/ldb/modules \
-           $PY3_CONFIG_FLAGS \
+           %{?extra_python} \
+           %{?without_lmdb_flags} \
            --with-privatelibdir=%{_libdir}/ldb
 
 make %{?_smp_mflags} V=1
 doxygen Doxyfile
 
 %check
+%{?export_waf_python}
 make %{?_smp_mflags} check
 
 %install
+%{?export_waf_python}
 make install DESTDIR=$RPM_BUILD_ROOT
-
-rm -f $RPM_BUILD_ROOT%{_libdir}/libldb.a
-
-# Shared libraries need to be marked executable for
-# rpmbuild to strip them and include them in debuginfo
-find $RPM_BUILD_ROOT -name "*.so*" -exec chmod -c +x {} \;
 
 # Install API docs
 cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 
-# LDB 1.1.8+ bug: remove manpage named after full
-# file path
+# bug: remove manpage named after full file path
+# not needed with el8+ and fc28+
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
-# Flush build-id reckage
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
-
-#ldconfig_scriptlets not compatible with RHEL
-%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets
-%else
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-%endif # fedora || rhel > 7
 
 %files
 %dir %{_libdir}/ldb
 %{_libdir}/libldb.so.*
 %{_libdir}/ldb/libldb-key-value.so
-# lmdb is not supported on 32 bit architectures
-%if 0%{?__isa_bits} == 64
+%{_libdir}/ldb/libldb-tdb-err-map.so
+%{_libdir}/ldb/libldb-tdb-int.so
+%if 0%{?with_lmdb}
 %{_libdir}/ldb/libldb-mdb-int.so
 %endif
 %dir %{_libdir}/ldb/modules
@@ -235,6 +232,11 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 %{_mandir}/man3/ldb*.gz
 %{_mandir}/man3/ldif*.gz
 
+%files -n python-ldb-devel-common
+%{_includedir}/pyldb.h
+%{_mandir}/man*/Py*.gz
+
+%if 0%{?with_python2}
 %files -n python2-ldb
 %{python2_sitearch}/ldb.so
 %{_libdir}/libpyldb-util.so.1*
@@ -244,19 +246,10 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 %{_libdir}/libpyldb-util.so
 %{_libdir}/pkgconfig/pyldb-util.pc
 
-%files -n python-ldb-devel-common
-%{_includedir}/pyldb.h
-%{_mandir}/man*/Py*.gz
-
-%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets -n python2-ldb
-%else
-%post -n python2-ldb -p /sbin/ldconfig
-%postun -n python2-ldb -p /sbin/ldconfig
-%endif # fedora || rhel > 7
+%endif
 
 %if 0%{?with_python3}
-
 %files -n python3-ldb
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.1*
@@ -267,30 +260,31 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets -n python3-ldb
-%else
-%post -n python3-ldb -p /sbin/ldconfig
-%postun -n python3-ldb -p /sbin/ldconfig
-%endif # fedora || rhel > 7
-
-%endif # with_python3
+%endif
 
 %changelog
-* Sun Nov 25 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
-- Repair usage of ldconfig for multiple packages
+* Tue Mar 19 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.1
+- Roll back release to avoid rawhide conflicts
+- Include python2/python3 workarounds for Fedora python3 defaults
 
-* Sun Nov 25 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.3-0
-- Update to 1.4.3
-- Enable ldconfig_scriptets only for fedora || el > 7
-- Flush build-id
+* Wed Mar 06 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.4-1
+- New upstream release 1.5.4
 
-* Thu Nov 1 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0.1
-- Update Source URL
+* Thu Feb 14 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.3-1
+- New upstream release 1.5.3
 
-* Mon Sep 3 2018 Nico Kadel-Garcia <nkadel@gmail.com> - 1.4.2-0
-- Renumber to 1.4.2-0
-- Add sed workaround for missing pathfix.py for RHEL
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.5.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Thu Jan 17 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.2-1
+- New upstream release 1.5.2
+
+* Thu Nov  8 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.4.3-1
+- New upstream release 1.4.3
+
+* Thu Aug 16 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.4.2-1
+- New upstream release 1.4.2
 
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
@@ -298,7 +292,7 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 * Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.1-1
 - New upstream release 1.4.1
 - Apply a patch to hide local ABI symbols to avoid issues with new binutils
-- Patch the waf script to explicitly call python2 as "env python" does not
+- Patch the waf script to explicitly call python2 as "env python" doesn't
   yield py2 anymore
 
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.4.0-2
@@ -467,7 +461,7 @@ rm -rf $RPM_BUILD_ROOT/%{_libdir}/.build-id
 - New upstream release 1.1.17
 
 * Thu Jan 02 2014 Stephen Gallagher <sgallagh@redhat.com> - 1.1.16-4
-- Enable building libldb LDAP interface module
+- Enable building libldb's LDAP interface module
 
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.16-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
