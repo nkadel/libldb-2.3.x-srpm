@@ -11,6 +11,7 @@ MOCKS+=samba4repo-7-x86_64
 # libcmocka-devel > 1.1.1 required
 #MOCKS+=samba4repo-6-x86_64
 
+# repositories to touch after installation
 #MOCKCFGS+=samba4repo-f29-x86_64
 #MOCKCFGS+=samba4repo-7-x86_64
 ##MOCKCFGS+=samba4repo-6-x86_64
@@ -68,7 +69,7 @@ install:: $(MOCKS)
 		*-7-x86_64) yumrelease=el/7; yumarch=x86_64; ;; \
 		*-29-x86_64) yumrelease=fedora/29; yumarch=x86_64; ;; \
 		*-f29-x86_64) yumrelease=fedora/29; yumarch=x86_64; ;; \
-		*) echo "Unrecognized relese for $$repo, exiting" >&2; exit 1; ;; \
+		*) echo "Unrecognized release for $$repo, exiting" >&2; exit 1; ;; \
 	    esac; \
 	    rpmdir=$(REPOBASEDIR)/$$yumrelease/$$yumarch; \
 	    srpmdir=$(REPOBASEDIR)/$$yumrelease/SRPMS; \
