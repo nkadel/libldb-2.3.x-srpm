@@ -190,7 +190,9 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # not needed with el8+ and fc28+
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
-%ldconfig_scriptlets
+#%%ldconfig_scriptlets
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %files
 %dir %{_libdir}/ldb
@@ -246,7 +248,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_libdir}/libpyldb-util.so
 %{_libdir}/pkgconfig/pyldb-util.pc
 
-%ldconfig_scriptlets -n python2-ldb
+#%%ldconfig_scriptlets -n python2-ldb
+%post -n python2-ldb -p /sbin/ldconfig
+%postun -n python2-ldb -p /sbin/ldconfig
 %endif
 
 %if 0%{?with_python3}
@@ -260,13 +264,16 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-%ldconfig_scriptlets -n python3-ldb
+#%%ldconfig_scriptlets -n python3-ldb
+%post -n python3-ldb -p /sbin/ldconfig
+%postun -n python3-ldb -p /sbin/ldconfig
 %endif
 
 %changelog
 * Tue Mar 19 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.1
 - Roll back release to avoid rawhide conflicts
 - Include python2/python3 workarounds for Fedora python3 defaults
+- Switch out ldconfig_scriplets for compilaton on RHEL 7
 
 * Wed Mar 06 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.4-1
 - New upstream release 1.5.4
