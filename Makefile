@@ -37,18 +37,13 @@ build:: srpm FORCE
 	rpmbuild --define '_topdir $(PWD)/rpmbuild' \
 		--rebuild rpmbuild/SRPMS/*.src.rpm
 
-$(MOCKS):: verifyspec FORCE
+$(MOCKS):: verifyspec srpm FORCE
 	@if [ -e $@ -a -n "`find $@ -name \*.rpm`" ]; then \
 		echo "	Skipping RPM populated $@"; \
 	else \
-		echo "	Building $@ RPMS with $(SPEC)"; \
-		rm -rf $@; \
-		mock -q -r $(PWD)/../$@.cfg \
-		    --resultdir=$(PWD)/$@ \
-		    --sources=$(PWD) --buildsrpm --spec=$(SPEC); \
-		echo "Storing $@/*.src.rpm in $@.rpm"; \
-		/bin/mv $@/*.src.rpm $@.src.rpm; \
-		echo "Actally building RPMS in $@"; \
+		echo "Storing " rpmbuild/SRPMS/*.src.rpm "as $@.src.rpm"; \
+		rsync -a rpmbuild/SRPMS/*.src.rpm $@.src.rpm; \
+		echo "Building $@.src.rpm in $@"; \
 		rm -rf $@; \
 		mock -q -r $(PWD)/../$@.cfg \
 		     --resultdir=$(PWD)/$@ \
