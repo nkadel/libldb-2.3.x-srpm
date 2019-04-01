@@ -11,18 +11,22 @@
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 %global with_python3 1
+%else
+%global with_python3 0
 %endif
 
 %if 0%{?fedora} || 0%{?rhel} < 8
 %global with_python2 1
+%else
+%global with_python2 0
 %endif
 
-%if (0%{?with_python2} == 1 && 0%{?with_python3} == 0)
+%if %{with_python2} && ! %{with_python3}
 # We need to sent env PYTHON for python2 only build
 %global export_waf_python export PYTHON=%{__python2}
 %endif
 
-%if (0%{?with_python2} == 1 && 0%{?with_python3} == 1)
+%if %{with_python2} && %{with_python3}
 # python3 is default and therefore python2 need to be set as extra-python
 %global extra_python --extra-python=%{__python2}
 %endif
@@ -55,13 +59,13 @@ BuildRequires: lmdb-devel >= 0.9.16
 BuildRequires: popt-devel
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
-%if 0%{?with_python2}
+%if %{with_python2}
 BuildRequires: python2-devel
 BuildRequires: python2-tdb
 BuildRequires: python2-talloc-devel
 BuildRequires: python2-tevent
 %endif
-%if 0%{?with_python3}
+%if %{with_python3}
 BuildRequires: python3-devel
 BuildRequires: python3-tdb
 BuildRequires: python3-talloc-devel
@@ -94,7 +98,7 @@ Requires: libtevent-devel%{?_isa} >= %{tevent_version}
 %description devel
 Header files needed to develop programs that link against the LDB library.
 
-%if 0%{?with_python2}
+%if %{with_python2}
 %package -n python2-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
@@ -132,7 +136,7 @@ Provides: pyldb-devel%{?_isa} = %{version}-%{release}
 Development files for the Python bindings for the LDB library.
 This package includes files that are not specific to a Python version.
 
-%if 0%{?with_python3}
+%if %{with_python3}
 %package -n python3-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
@@ -238,7 +242,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_includedir}/pyldb.h
 %{_mandir}/man*/Py*.gz
 
-%if 0%{?with_python2}
+%if %{with_python2}
 %files -n python2-ldb
 %{python2_sitearch}/ldb.so
 %{_libdir}/libpyldb-util.so.1*
@@ -253,7 +257,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %postun -n python2-ldb -p /sbin/ldconfig
 %endif
 
-%if 0%{?with_python3}
+%if %{with_python3}
 %files -n python3-ldb
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.1*
