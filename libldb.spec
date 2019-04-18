@@ -1,8 +1,34 @@
+# Single python3 version in Fedora, python3_pkgversion macro not available
+%{!?python3_pkgversion:%global python3_pkgversion 3}
+%{!?python2_pkgversion:%global python2_pkgversion 2}
+
+%{!?__python2:        %global __python2 /usr/bin/python2}
+%{!?python2_sitelib:  %global python2_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+
 # lmdb is not supported on 32 bit architectures
 %if ((0%{?fedora} || 0%{?epel} > 6) && 0%{?__isa_bits} == 64)
 %global with_lmdb 1
 %else
 %global without_lmdb_flags --without-ldb-lmdb
+%endif
+
+%if 0%{?fedora} || 0%{?rhel} > 6
+%global with_python3 1
+%endif
+
+%if 0%{?fedora} || 0%{?rhel} < 8
+%global with_python2 1
+%endif
+
+%if (0%{?with_python2} == 1 && 0%{?with_python3} == 0)
+# We need to sent env PYTHON for python2 only build
+%global export_waf_python export PYTHON=%{__python2}
+%endif
+
+%if (0%{?with_python2} == 1 && 0%{?with_python3} == 1)
+# python3 is default and therefore python2 need to be set as extra-python
+%global extra_python --extra-python=%{__python2}
 %endif
 
 %global talloc_version 2.1.16
@@ -11,7 +37,7 @@
 
 Name: libldb
 Version: 1.5.4
-Release: 0.1%{?dist}
+Release: 0.3%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -33,10 +59,18 @@ BuildRequires: lmdb-devel >= 0.9.16
 BuildRequires: popt-devel
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
-BuildRequires: python3-devel
-BuildRequires: python3-tdb
-BuildRequires: python3-talloc-devel
-BuildRequires: python3-tevent
+%if 0%{?with_python2}
+BuildRequires: python2-devel
+BuildRequires: python2-tdb
+BuildRequires: python2-talloc-devel
+BuildRequires: python2-tevent
+%endif
+%if 0%{?with_python3}
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-tdb
+BuildRequires: python%{python3_pkgversion}-talloc-devel
+BuildRequires: python%{python3_pkgversion}-tevent
+%endif
 BuildRequires: doxygen
 BuildRequires: openldap-devel
 BuildRequires: libcmocka-devel
@@ -64,35 +98,65 @@ Requires: libtevent-devel%{?_isa} >= %{tevent_version}
 %description devel
 Header files needed to develop programs that link against the LDB library.
 
+%if 0%{?with_python2}
+%package -n python2-ldb
+Summary: Python bindings for the LDB library
+Requires: libldb%{?_isa} = %{version}-%{release}
+Requires: python2-tdb%{?_isa} >= %{tdb_version}
+
+Provides: pyldb = %{version}-%{release}
+Provides: pyldb%{?_isa} = %{version}-%{release}
+Obsoletes: pyldb < 1.1.26-2
+%{?python_provide:%python_provide python2-ldb}
+
+%description -n python2-ldb
+Python bindings for the LDB library
+
+%package -n python2-ldb-devel
+Summary: Development files for the Python bindings for the LDB library
+Requires: python2-ldb%{?_isa} = %{version}-%{release}
+Requires: python-ldb-devel-common%{?_isa} = %{version}-%{release}
+
+Provides: pyldb-devel = %{version}-%{release}
+Provides: pyldb-devel%{?_isa} = %{version}-%{release}
+Obsoletes: pyldb-devel < 1.1.26-2
+%{?python_provide:%python_provide python2-ldb-devel}
+
+%description -n python2-ldb-devel
+Development files for the Python bindings for the LDB library
+%endif
+
 %package -n python-ldb-devel-common
 Summary: Common development files for the Python bindings for the LDB library
 
 Provides: pyldb-devel%{?_isa} = %{version}-%{release}
-%{?python_provide:%python_provide python3-ldb-devel}
+%{?python_provide:%python_provide python2-ldb-devel}
 
 %description -n python-ldb-devel-common
 Development files for the Python bindings for the LDB library.
 This package includes files that are not specific to a Python version.
 
-%package -n python3-ldb
+%if 0%{?with_python3}
+%package -n python%{python3_pkgversion}-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
-Requires: python3-tdb%{?_isa} >= %{tdb_version}
+Requires: python%{python3_pkgversion}-tdb%{?_isa} >= %{tdb_version}
 
-%{?python_provide:%python_provide python3-ldb}
+%{?python_provide:%python_provide python%{python3_pkgversion}-ldb}
 
-%description -n python3-ldb
+%description -n python%{python3_pkgversion}-ldb
 Python bindings for the LDB library
 
-%package -n python3-ldb-devel
+%package -n python%{python3_pkgversion}-ldb-devel
 Summary: Development files for the Python bindings for the LDB library
-Requires: python3-ldb%{?_isa} = %{version}-%{release}
+Requires: python%{python3_pkgversion}-ldb%{?_isa} = %{version}-%{release}
 Requires: python-ldb-devel-common%{?_isa} = %{version}-%{release}
 
-%{?python_provide:%python_provide python3-ldb-devel}
+%{?python_provide:%python_provide python%{python3_pkgversion}-ldb-devel}
 
-%description -n python3-ldb-devel
+%description -n python%{python3_pkgversion}-ldb-devel
 Development files for the Python bindings for the LDB library
+%endif
 
 %prep
 %autosetup -n ldb-%{version} -p1
@@ -130,9 +194,10 @@ cp -a apidocs/man/* $RPM_BUILD_ROOT/%{_mandir}
 # not needed with el8+ and fc28+
 rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
-#%%ldconfig_scriptlets
+##%%ldconfig_scriptlets
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
+%
 
 %files
 %dir %{_libdir}/ldb
@@ -178,25 +243,40 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_includedir}/pyldb.h
 %{_mandir}/man*/Py*.gz
 
-%files -n python3-ldb
+%if 0%{?with_python2}
+%files -n python2-ldb
+%{python2_sitearch}/ldb.so
+%{_libdir}/libpyldb-util.so.1*
+%{python2_sitearch}/_ldb_text.py*
+
+%files -n python2-ldb-devel
+%{_libdir}/libpyldb-util.so
+%{_libdir}/pkgconfig/pyldb-util.pc
+
+##%%ldconfig_scriptlets -n python2-ldb
+%post -p /sbin/ldconfig -n python2-ldb
+%postun -p /sbin/ldconfig -n python2-ldb
+%endif
+
+%if 0%{?with_python3}
+%files -n python%{python3_pkgversion}-ldb
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.1*
 %{python3_sitearch}/_ldb_text.py
 %{python3_sitearch}/__pycache__/_ldb_text.cpython-*.py*
 
-%files -n python3-ldb-devel
+%files -n python%{python3_pkgversion}-ldb-devel
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-#%%ldconfig_scriptlets -n python3-ldb
-%post -n python3-ldb -p /sbin/ldconfig
-%postun -n python3-ldb -p /sbin/ldconfig
+#%%ldconfig_scriptlets -n python%%{python3_pkgversion}-ldb
+%post -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
+%postun -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
+%endif
 
 %changelog
-* Tue Mar 19 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.1
-- Roll back release to avoid rawhide conflicts
-- Switch out ldconfig_scriplets for compilaton on RHEL 7
-- Discard with_python2 and with_python3, force python3 everywhere
+* Tue Apr 16 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.3
+- Use python3_pkgversion for RHEL 7
 
 * Wed Mar 06 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.4-1
 - New upstream release 1.5.4
