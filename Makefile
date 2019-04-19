@@ -8,6 +8,13 @@ LANG=C
 # Fedora 29 has recent libldb
 MOCKS+=samba4repo-f29-x86_64
 MOCKS+=samba4repo-7-x86_64
+# libcmocka-devel > 1.1.1 required
+#MOCKS+=samba4repo-6-x86_64
+
+# repositories to touch after installation
+#MOCKCFGS+=samba4repo-f29-x86_64
+#MOCKCFGS+=samba4repo-7-x86_64
+##MOCKCFGS+=samba4repo-6-x86_64
 
 MOCKCFGS+=samba4repo-f29-x86_64
 MOCKCFGS+=samba4repo-7-x86_64
@@ -71,6 +78,10 @@ install:: $(MOCKS)
 	    echo "Pushing RPMS to $$rpmdir"; \
 	    rsync -av $$repo/*.rpm --exclude=*.src.rpm --exclude=*debuginfo*.rpm --no-owner --no-group $$repo/*.rpm $$rpmdir/. || exit 1; \
 	    createrepo -q --update $$rpmdir/.; \
+	done
+	@for repo in $(MOCKCFGS); do \
+	    echo "Touching $(PWD)/../$$repo.cfg to clear cache"; \
+	    /bin/touch --no-dereference $(PWD)/../$$repo.cfg; \
 	done
 	@for repo in $(MOCKCFGS); do \
 	    echo "Touching $(PWD)/../$$repo.cfg to clear cache"; \
