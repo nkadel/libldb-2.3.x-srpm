@@ -198,18 +198,6 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
-%if 0%{?with_python2}
-#%%ldconfig_scriptlets -n python2-ldb
-%post -n python%{python2_pkgversion}-ldb -p /sbin/ldconfig
-%postun -n python%{python2_pkgversion}-ldb -p /sbin/ldconfig
-%endif
-
-%if 0%{?with_python3}
-#%%ldconfig_scriptlets -n python%{python3_pkgversion}-ldb
-%post -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
-%postun -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
-%endif
-
 %files
 %dir %{_libdir}/ldb
 %{_libdir}/libldb.so.*
