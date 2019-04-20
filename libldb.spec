@@ -197,14 +197,17 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 ##%%ldconfig_scriptlets
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
-%
 
 %if 0%{?with_python2}
-%ldconfig_scriptlets -n python2-ldb
+#%%ldconfig_scriptlets -n python2-ldb
+%post -n python%{python2_pkgversion}-ldb -p /sbin/ldconfig
+%postun -n python%{python2_pkgversion}-ldb -p /sbin/ldconfig
 %endif
 
 %if 0%{?with_python3}
-%ldconfig_scriptlets -n python3-ldb
+#%%ldconfig_scriptlets -n python%{python3_pkgversion}-ldb
+%post -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
+%postun -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
 %endif
 
 %files
@@ -285,6 +288,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %changelog
 * Tue Apr 16 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.3
 - Use python3_pkgversion for RHEL 7
+- Replace ldconfig_scriptlets for RHEL 7
 
 * Wed Mar 06 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.4-1
 - New upstream release 1.5.4
