@@ -2,10 +2,6 @@
 %{!?python3_pkgversion:%global python3_pkgversion 3}
 %{!?python2_pkgversion:%global python2_pkgversion 2}
 
-%{!?__python2:        %global __python2 /usr/bin/python2}
-%{!?python2_sitelib:  %global python2_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-
 # lmdb is not supported on 32 bit architectures
 %if ((0%{?fedora} || 0%{?epel} > 6) && 0%{?__isa_bits} == 64)
 %global with_lmdb 1
@@ -15,9 +11,13 @@
 
 %if 0%{?fedora} || 0%{?rhel} > 6
 %global with_python3 1
+%else
+%global with_python3 0
 %endif
 
-%if 0%{?fedora} || 0%{?rhel} < 8
+%if 0%{?fedora} > 30 || 0%{?rhel} > 7
+%global with_python2 0
+%else
 %global with_python2 1
 %endif
 
@@ -37,7 +37,7 @@
 
 Name: libldb
 Version: 1.5.4
-Release: 0.3%{?dist}
+Release: 0.4%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -73,7 +73,7 @@ BuildRequires: python%{python3_pkgversion}-tevent
 %endif
 BuildRequires: doxygen
 BuildRequires: openldap-devel
-BuildRequires: libcmocka-devel
+BuildRequires: libcmocka-devel >= 1.1.3
 
 Provides: bundled(libreplace)
 
@@ -274,6 +274,10 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Sun May 12 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.4
+- Disable python2 for RHEL 8
+- Discard __python2 added setups
+
 * Tue Apr 16 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.3
 - Use python3_pkgversion for RHEL 7
 - Replace ldconfig_scriptlets for RHEL 7
