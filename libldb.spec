@@ -36,7 +36,7 @@
 %global tevent_version 0.9.39
 
 Name: libldb
-Version: 1.5.4
+Version: 1.5.5
 Release: 0.4%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
@@ -274,6 +274,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Thu Jul 11 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.5-0
+- Update to 1.5.5
+
 * Sun May 12 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 1.5.4-0.4
 - Disable python2 for RHEL 8
 - Discard __python2 added setups
