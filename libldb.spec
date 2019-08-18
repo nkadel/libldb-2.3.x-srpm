@@ -9,35 +9,17 @@
 %global without_lmdb_flags --without-ldb-lmdb
 %endif
 
-%if 0%{?fedora} || 0%{?rhel} > 6
 %global with_python3 1
-%else
-%global with_python3 0
-%endif
 
-%if 0%{?fedora} > 30 || 0%{?rhel} > 7
 %global with_python2 0
-%else
-%global with_python2 1
-%endif
 
-%if (0%{?with_python2} == 1 && 0%{?with_python3} == 0)
-# We need to sent env PYTHON for python2 only build
-%global export_waf_python export PYTHON=%{__python2}
-%endif
-
-%if (0%{?with_python2} == 1 && 0%{?with_python3} == 1)
-# python3 is default and therefore python2 need to be set as extra-python
-%global extra_python --extra-python=%{__python2}
-%endif
-
-%global talloc_version 2.1.16
-%global tdb_version 1.3.18
-%global tevent_version 0.9.39
+%global talloc_version 2.2.0
+%global tdb_version 1.4.0
+%global tevent_version 0.10.0
 
 Name: libldb
-Version: 1.5.5
-Release: 0.4%{?dist}
+Version: 1.6.3
+Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -47,7 +29,7 @@ URL: https://ldb.samba.org/
 Source: https://samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 # Patches
-Patch0001: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
+#Patch0001: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
 
 BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
@@ -143,6 +125,9 @@ Requires: libldb%{?_isa} = %{version}-%{release}
 Requires: python%{python3_pkgversion}-tdb%{?_isa} >= %{tdb_version}
 
 %{?python_provide:%python_provide python%{python3_pkgversion}-ldb}
+%if ! %{with_python2}
+Obsoletes: python2-ldb
+%endif
 
 %description -n python%{python3_pkgversion}-ldb
 Python bindings for the LDB library
@@ -153,13 +138,17 @@ Requires: python%{python3_pkgversion}-ldb%{?_isa} = %{version}-%{release}
 Requires: python-ldb-devel-common%{?_isa} = %{version}-%{release}
 
 %{?python_provide:%python_provide python%{python3_pkgversion}-ldb-devel}
+%if ! %{with_python2}
+Obsoletes: python2-ldb-deveo
+%endif
 
 %description -n python%{python3_pkgversion}-ldb-devel
 Development files for the Python bindings for the LDB library
 %endif
 
 %prep
-%autosetup -n ldb-%{version} -p1
+#%autosetup -n ldb-%{version} -p1
+%autosetup -n ldb-%{version}
 
 %build
 
@@ -262,7 +251,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.1*
 %{python3_sitearch}/_ldb_text.py
-%{python3_sitearch}/__pycache__/_ldb_text.cpython-*.py*
+%if 0%{?fedora} > 0
+%{python3_sitearch}/__pycache__/*
+%endif
 
 %files -n python%{python3_pkgversion}-ldb-devel
 %{_libdir}/libpyldb-util.cpython-*.so
