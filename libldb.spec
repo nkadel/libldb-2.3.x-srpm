@@ -234,7 +234,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %if 0%{?with_python2}
 %files -n python2-ldb
 %{python2_sitearch}/ldb.so
-%{_libdir}/libpyldb-util.so.1*
+%{_libdir}/libpyldb-util.so.2*
 %{python2_sitearch}/_ldb_text.py*
 
 %files -n python2-ldb-devel
@@ -249,7 +249,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %if 0%{?with_python3}
 %files -n python%{python3_pkgversion}-ldb
 %{python3_sitearch}/ldb.cpython-*.so
-%{_libdir}/libpyldb-util.cpython-*.so.1*
+%{_libdir}/libpyldb-util.cpython-*.so.2*
 %{python3_sitearch}/_ldb_text.py
 %if 0%{?fedora} > 0
 %{python3_sitearch}/__pycache__/*
