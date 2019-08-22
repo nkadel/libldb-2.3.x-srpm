@@ -5,7 +5,6 @@
 # Assure that sorting is case sensitive
 LANG=C
 
-# Fedora 29 has recent libldb
 MOCKS+=samba4repo-f30-x86_64
 #MOCKS+=samba4repo-8-x86_64
 MOCKS+=samba4repo-7-x86_64
