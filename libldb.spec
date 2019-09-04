@@ -13,7 +13,7 @@
 
 %global with_python2 0
 
-%global talloc_version 2.2.0
+%global talloc_version 2.3.0
 %global tdb_version 1.4.2
 %global tevent_version 0.10.0
 
