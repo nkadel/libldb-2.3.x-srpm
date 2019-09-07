@@ -18,7 +18,7 @@
 %global tevent_version 0.10.0
 
 Name: libldb
-Version: 2.0.6
+Version: 2.0.7
 Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
@@ -265,6 +265,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Wed Sep 4 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 2.0.7-0
+- Updte to 2.0.7
+
 * Wed Aug 21 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 2.0.5-0
 - Update to 2.0.5
 
