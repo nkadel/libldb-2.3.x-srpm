@@ -1,9 +1,5 @@
-# Single python3 version in Fedora, python3_pkgversion macro not available
-%{!?python3_pkgversion:%global python3_pkgversion 3}
-%{!?python2_pkgversion:%global python2_pkgversion 2}
-
 # lmdb is not supported on 32 bit architectures
-%if ((0%{?fedora} || 0%{?epel} > 6) && 0%{?__isa_bits} == 64)
+%if ((0%{?fedora} || 0%{?rhel} > 6) && 0%{?__isa_bits} == 64)
 %global with_lmdb 1
 %else
 %global without_lmdb_flags --without-ldb-lmdb
@@ -11,6 +7,7 @@
 
 %global with_python3 1
 
+# Python 2 no longer supported
 %global with_python2 0
 
 %global talloc_version 2.3.0
@@ -30,6 +27,11 @@ Source: https://samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 # Patches
 #Patch0001: 0002-ldb-Run-at-least-some-tests-on-32-bit-machines.patch
+
+%if (0%{?rhel > 0 && 0%{?rhel} <= 7)
+# Addresses python36- versus python3- dependencies
+BuildRequires: epel-rpm-macros
+%endif
 
 BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
@@ -251,9 +253,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.2*
 %{python3_sitearch}/_ldb_text.py
-%if 0%{?fedora} > 0
+#%if 0%{?fedora} > 0
 %{python3_sitearch}/__pycache__/*
-%endif
+#%endif
 
 %files -n python%{python3_pkgversion}-ldb-devel
 %{_libdir}/libpyldb-util.cpython-*.so
@@ -267,6 +269,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %changelog
 * Wed Sep 4 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 2.0.7-0
 - Updte to 2.0.7
+- Enable __pycache__ files for RHEL
 
 * Wed Aug 21 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 2.0.5-0
 - Update to 2.0.5
