@@ -253,9 +253,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.2*
 %{python3_sitearch}/_ldb_text.py
-#%if 0%{?fedora} > 0
 %{python3_sitearch}/__pycache__/*
-#%endif
 
 %files -n python%{python3_pkgversion}-ldb-devel
 %{_libdir}/libpyldb-util.cpython-*.so
