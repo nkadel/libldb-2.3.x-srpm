@@ -8,11 +8,11 @@
 %global with_python3 1
 
 %global talloc_version 2.3.0
-%global tdb_version 1.4.2
-%global tevent_version 0.10.0
+%global tdb_version 1.4.3
+%global tevent_version 0.10.2
 
 Name: libldb
-Version: 2.0.8
+Version: 2.1.0
 Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
@@ -90,7 +90,7 @@ Requires: libldb%{?_isa} = %{version}-%{release}
 Requires: python%{python3_pkgversion}-tdb%{?_isa} >= %{tdb_version}
 
 %{?python_provide:%python_provide python%{python3_pkgversion}-ldb}
-Obsoletes: python2-ldb <= %version-%{releawse}
+Obsoletes: python2-ldb <= %version-%{release}
 
 %description -n python%{python3_pkgversion}-ldb
 Python bindings for the LDB library
@@ -101,7 +101,7 @@ Requires: python%{python3_pkgversion}-ldb%{?_isa} = %{version}-%{release}
 Requires: python-ldb-devel-common%{?_isa} = %{version}-%{release}
 
 %{?python_provide:%python_provide python%{python3_pkgversion}-ldb-devel}
-Obsoletes: python2-ldb-devel <= %version-%{releawse}
+Obsoletes: python2-ldb-devel <= %version-%{release}
 
 %description -n python%{python3_pkgversion}-ldb-devel
 Development files for the Python bindings for the LDB library
@@ -211,6 +211,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Sun Feb 2 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.1.0-0
+- Update to 2.1.0
+
 * Mon Dec 16 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 2.0.8-0
 - Update to 2.0.8
 - Integrate python2 discards for RHEL 8
