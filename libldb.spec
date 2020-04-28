@@ -7,12 +7,12 @@
 
 %global with_python3 1
 
-%global talloc_version 2.3.0
+%global talloc_version 2.3.1
 %global tdb_version 1.4.3
 %global tevent_version 0.10.2
 
 Name: libldb
-Version: 2.1.1
+Version: 2.1.2
 Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
