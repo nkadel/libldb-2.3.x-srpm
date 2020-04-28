@@ -211,6 +211,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Tue Apr 28 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.1.2-0
+- Update to 2.1.2
+
 * Sun Mar 8 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.1.1-0
 - Update to 2.1.1
 
