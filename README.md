@@ -1,4 +1,4 @@
-libldb-2.1.x-srpm
+libldb-2.2.x-srpm
 =================
 
 SRPM building tools for libldb-2.1.x for runing Samba 4 on RHEL and Fedora
@@ -11,7 +11,7 @@ installed in the following order.
 
 	libtalloc-2.3.x-srpm
 	libtdb-1.4.x-srpm
-	libldb-2.1.x-srpm
+	libldb-2.2.x-srpm
 	libtevent-0.10.x-srpm
 
 	samba-4.11.x-srpm
