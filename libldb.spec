@@ -20,7 +20,7 @@ Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
 URL: https://ldb.samba.org/
-Source: https://samba.org/ftp/ldb/ldb-%{version}.tar.gz
+Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 
 %if 0%{?rhel} > 0
 # Addresses python36- versus python3- dependencies
