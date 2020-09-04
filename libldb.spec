@@ -13,7 +13,8 @@
 
 Name: libldb
 Version: 2.2.0
-Release: 0%{?dist}
+#Release: 10%%{?dist}
+Release: 0.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -21,11 +22,6 @@ Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
 URL: https://ldb.samba.org/
 Source: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
-
-%if 0%{?rhel} > 0
-# Addresses python36- versus python3- dependencies
-BuildRequires: epel-rpm-macros
-%endif
 
 # Patches
 Patch0001: 0001-PATCH-wafsamba-Fix-few-SyntaxWarnings-caused-by-regu.patch
@@ -41,10 +37,10 @@ BuildRequires: popt-devel
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
 %if 0%{?with_python3}
-BuildRequires: python%{python3_pkgversion}-devel
-BuildRequires: python%{python3_pkgversion}-tdb
-BuildRequires: python%{python3_pkgversion}-talloc-devel
-BuildRequires: python%{python3_pkgversion}-tevent
+BuildRequires: python3-devel
+BuildRequires: python3-tdb
+BuildRequires: python3-talloc-devel
+BuildRequires: python3-tevent
 %endif
 BuildRequires: doxygen
 BuildRequires: openldap-devel
@@ -84,26 +80,26 @@ Development files for the Python bindings for the LDB library.
 This package includes files that are not specific to a Python version.
 
 %if 0%{?with_python3}
-%package -n python%{python3_pkgversion}-ldb
+%package -n python3-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
-Requires: python%{python3_pkgversion}-tdb%{?_isa} >= %{tdb_version}
+Requires: python3-tdb%{?_isa} >= %{tdb_version}
 
-%{?python_provide:%python_provide python%{python3_pkgversion}-ldb}
+%{?python_provide:%python_provide python3-ldb}
 Obsoletes: python2-ldb <= %version-%{release}
 
-%description -n python%{python3_pkgversion}-ldb
+%description -n python3-ldb
 Python bindings for the LDB library
 
-%package -n python%{python3_pkgversion}-ldb-devel
+%package -n python3-ldb-devel
 Summary: Development files for the Python bindings for the LDB library
-Requires: python%{python3_pkgversion}-ldb%{?_isa} = %{version}-%{release}
+Requires: python3-ldb%{?_isa} = %{version}-%{release}
 Requires: python-ldb-devel-common%{?_isa} = %{version}-%{release}
 
-%{?python_provide:%python_provide python%{python3_pkgversion}-ldb-devel}
+%{?python_provide:%python_provide python3-ldb-devel}
 Obsoletes: python2-ldb-devel <= %version-%{release}
 
-%description -n python%{python3_pkgversion}-ldb-devel
+%description -n python3-ldb-devel
 Development files for the Python bindings for the LDB library
 %endif
 
@@ -195,24 +191,28 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 
 
 %if 0%{?with_python3}
-%files -n python%{python3_pkgversion}-ldb
+%files -n python3-ldb
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.2*
 %{python3_sitearch}/_ldb_text.py
 %{python3_sitearch}/__pycache__/*
 
-%files -n python%{python3_pkgversion}-ldb-devel
+%files -n python3-ldb-devel
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-#%%ldconfig_scriptlets -n python%%{python3_pkgversion}-ldb
-%post -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
-%postun -n python%{python3_pkgversion}-ldb -p /sbin/ldconfig
+#%%ldconfig_scriptlets -n python%3-ldb
+%post -n python3-ldb -p /sbin/ldconfig
+%postun -n python3-ldb -p /sbin/ldconfig
 %endif
 
 %changelog
-* Mon Jul 13 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.2.0-0 
-- Updaate to 2.2.0
+* Sat Sep 5 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.2.0-0.1 
+- Discard BuildRequires for epel-rpm-macros 
+- Replace %%{python3_pkgvversion} with 3
+
+* Mon Jul 13 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.2.0-0
+- Update to 2.2.0
 
 * Tue Apr 28 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.1.4-0
 - Update to 2.1.4
