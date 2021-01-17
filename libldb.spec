@@ -5,8 +5,6 @@
 %global without_lmdb_flags --without-ldb-lmdb
 %endif
 
-%global with_python3 1
-
 %global talloc_version 2.3.1
 %global tdb_version 1.4.3
 %global tevent_version 0.10.2
@@ -14,7 +12,7 @@
 Name: libldb
 Version: 2.2.0
 #Release: 10%%{?dist}
-Release: 0.1%{?dist}
+Release: 0.3%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -36,12 +34,10 @@ BuildRequires: lmdb-devel >= 0.9.16
 BuildRequires: popt-devel
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
-%if 0%{?with_python3}
 BuildRequires: python3-devel
 BuildRequires: python3-tdb
 BuildRequires: python3-talloc-devel
 BuildRequires: python3-tevent
-%endif
 BuildRequires: doxygen
 BuildRequires: openldap-devel
 BuildRequires: libcmocka-devel >= 1.1.3
@@ -73,13 +69,12 @@ Header files needed to develop programs that link against the LDB library.
 Summary: Common development files for the Python bindings for the LDB library
 
 Provides: pyldb-devel%{?_isa} = %{version}-%{release}
-%{?python_provide:%python_provide python2-ldb-devel}
+%{?python_provide:%python_provide python3-ldb-devel}
 
 %description -n python-ldb-devel-common
 Development files for the Python bindings for the LDB library.
 This package includes files that are not specific to a Python version.
 
-%if 0%{?with_python3}
 %package -n python3-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
@@ -101,7 +96,6 @@ Obsoletes: python2-ldb-devel <= %version-%{release}
 
 %description -n python3-ldb-devel
 Development files for the Python bindings for the LDB library
-%endif
 
 %prep
 %autosetup -n ldb-%{version} -p1
@@ -190,7 +184,6 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_mandir}/man*/Py*.gz
 
 
-%if 0%{?with_python3}
 %files -n python3-ldb
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.2*
@@ -201,81 +194,49 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-#%%ldconfig_scriptlets -n python%3-ldb
+#%%ldconfig_scriptlets -n python3-ldb
 %post -n python3-ldb -p /sbin/ldconfig
 %postun -n python3-ldb -p /sbin/ldconfig
-%endif
 
 %changelog
-* Sat Sep 5 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.2.0-0.1 
-- Discard BuildRequires for epel-rpm-macros 
-- Replace %%{python3_pkgvversion} with 3
+* Sat Jan 16 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.2.0-0.2
+- Ignore python3-lib*-devel packages as needed for RHEL 8
+- Update from RHJEL 8 libldb.spec
 
-* Mon Jul 13 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.2.0-0
-- Update to 2.2.0
+* Wed Jun 24 2020 Isaac Boukris <iboukris@redhat.com> - 2.1.3-2
+- Resolves: rhbz#1849615 - Fix CVE-2020-10730 use-after-free
 
-* Tue Apr 28 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.1.4-0
-- Update to 2.1.4
+* Tue Jun 2 2020 Isaac Boukris <iboukris@redhat.com> - 2.1.3-1
+- Resolves: rhbz#1817567 - Rebase libldb to 2.1.3 for samba
 
-* Sun Mar 8 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.1.1-0
-- Update to 2.1.1
+* Tue Nov 26 2019 Isaac Boukris <iboukris@redhat.com> - 2.0.7-3
+- Resolves: rhbz#1754423 - Rebase libldb to 2.0.7 version for samba
+- Related: rhbz#1754423 - Fix sssd tests (ldb)
 
-* Sun Feb 2 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 2.1.0-0
-- Update to 2.1.0
+* Tue May  7 2019 Jakub Hrozek <jhrozek@redhat.com> - 1.5.4-2
+- Fix some python2-related upgrade issues
+- Related: rhbz#1567115 - libldb: Drop Python 2 subpackages from RHEL 8
 
-* Mon Dec 16 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 2.0.8-0
-- Update to 2.0.8
-- Integrate python2 discards for RHEL 8
+* Wed Apr 24 2019 Jakub Hrozek <jhrozek@redhat.com> - 1.5.4-1
+- Resolves: rhbz#1684582 - Rebase libldb to version 1.5.4 for Samba
+- Resolves: rhbz#1567115 - libldb: Drop Python 2 subpackages from RHEL 8
+- Resolves: rhbz#1597243 - libldb uses Python 2 to build.
 
-* Wed Sep 11 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 2.0.7-1
-- rhbz#1748422 - libldb-2.0.7 is available
+* Thu Sep 20 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.2-2
+- Resolves: rhbz#1624132 - Review annocheck distro flag failures in libldb
 
-* Tue Sep 03 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 2.0.6-1
-- rhbz#1748422 - New upstream release 2.0.6
-
-* Mon Aug 26 2019 Guenther Deschner <gdeschner@redhat.com> - 2.0.5-1
-- rhbz#1683147 - libldb-2.0.5 is available
-- rhbz#1737644 - libldb, libtalloc, libtevent, libtdb: Remove Python 2 subpackages from Fedora 31+
-
-* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.5.5-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
-
-* Sat Jul 13 2019 Guenther Deschner <gdeschner@redhat.com> - 1.5.5-1
-- New upstream release 1.5.5
-
-* Fri Jun 14 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.4-3
-- rhbz#1718113 - samba fail to build with Python 3.8
-  AttributeError: module 'time' has no attribute 'clock'
-
-* Mon Jun 03 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.4-2
-- rhbz#1711638 - fails to build with Python 3.8.0a4
-
-* Wed Mar 06 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.4-1
-- New upstream release 1.5.4
-
-* Thu Feb 14 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.3-1
-- New upstream release 1.5.3
-
-* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.5.2-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
-
-* Thu Jan 17 2019 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.5.2-1
-- New upstream release 1.5.2
-
-* Thu Nov  8 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.4.3-1
-- New upstream release 1.4.3
-
-* Thu Aug 16 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.4.2-1
+* Fri Aug 17 2018 Alexander Bokovoy <abokovoy@redhat.com> - 1.4.2-1
 - New upstream release 1.4.2
+- Resolves: rhbz#1615989
 
-* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
-
-* Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.1-1
+* Fri Jul 13 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.1-1
 - New upstream release 1.4.1
-- Apply a patch to hide local ABI symbols to avoid issues with new binutils
-- Patch the waf script to explicitly call python2 as "env python" does not
-  yield py2 anymore
+- Obsoletes 0001-ldb-Fix-memory-leak-on-module-context.patch
+
+* Mon Jul 02 2018 Petr Viktorin <pviktori@redhat.com> - 1.4.0-3
+- Use %%{__python2}, not "python", as the Python2 interpreter
+- Add workaround to allow building with Python 2
+- Remove the lmdb dependency in RHEL
 
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.4.0-2
 - Rebuilt for Python 3.7
@@ -443,7 +404,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 - New upstream release 1.1.17
 
 * Thu Jan 02 2014 Stephen Gallagher <sgallagh@redhat.com> - 1.1.16-4
-- Enable building libldb LDAP interface module
+- Enable building libldb's LDAP interface module
 
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.16-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
