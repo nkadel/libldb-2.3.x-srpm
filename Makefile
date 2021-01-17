@@ -6,8 +6,7 @@
 LANG=C
 
 MOCKS+=samba4repo-f33-x86_64
-# Built into EL 8
-#MOCKS+=samba4repo-8-x86_64
+MOCKS+=samba4repo-8-x86_64
 MOCKS+=samba4repo-7-x86_64
 #MOCKS+=samba4repo-amz2-x86_64
 

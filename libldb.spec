@@ -11,8 +11,7 @@
 
 Name: libldb
 Version: 2.2.0
-#Release: 10%%{?dist}
-Release: 0.3%{?dist}
+Release: 2.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -36,6 +35,8 @@ BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
 BuildRequires: python3-devel
 BuildRequires: python3-tdb
+# RHEL 8 repackaged libtalloc and discarded this to mark their territory
+# Local version needes
 BuildRequires: python3-talloc-devel
 BuildRequires: python3-tevent
 BuildRequires: doxygen
