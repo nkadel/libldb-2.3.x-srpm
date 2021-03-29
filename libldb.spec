@@ -10,8 +10,8 @@
 %global tevent_version 0.10.2
 
 Name: libldb
-Version: 2.3.0
-Release: 0%{?dist}
+Version: 2.2.0
+Release: 2.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -200,9 +200,6 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %postun -n python3-ldb -p /sbin/ldconfig
 
 %changelog
-* Sat Mar 27 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.3.0-0
-- Update to 1.3.0
-
 * Sat Jan 16 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.2.0-0.2
 - Ignore python3-lib*-devel packages as needed for RHEL 8
 - Update from RHJEL 8 libldb.spec
