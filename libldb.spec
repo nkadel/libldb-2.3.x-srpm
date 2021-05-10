@@ -21,7 +21,8 @@
 
 Name: libldb
 Version: 2.3.0
-Release: 8%{?dist}
+#Release: 1%%{?dist}
+Release: 2.2%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -224,6 +225,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %changelog
 * Sat Mar 27 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.3.0-0
 - Update and ensure EL 7 compilation
+
+* Wed Mar 24 2021 Lukas Slebodnik <lslebodn@fedoraproject.org> - 2.3.0-1
+- libldb-2.3.0 is required for new samba
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.2.0-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
