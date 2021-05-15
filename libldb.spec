@@ -28,7 +28,7 @@ Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
-URL: https://ldb.samba.org/
+URL: http://ldb.samba.org/
 Source0: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 Source1: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.asc
 # gpg2 --no-default-keyring --keyring ./ldb.keyring --recv-keys 9147A339719518EE9011BCB54793916113084025
@@ -36,8 +36,6 @@ Source2: ldb.keyring
 
 # Patches
 Patch0001: 0001-PATCH-wafsamba-Fix-few-SyntaxWarnings-caused-by-regu.patch
-# Fix FTBFS / Increase the over-estimation for sparse files
-#Patch0002: https://gitlab.com/samba-team/samba/-/merge_requests/1420.patch
 
 BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
@@ -126,8 +124,8 @@ Development files for the Python bindings for the LDB library
 %autosetup -n ldb-%{version} -p1
 
 %build
-# Stop doing this: it delays compilaton and is not the job of the .spec file
-#zcat %{SOURCE0} | gpgv2 --quiet --keyring %{SOURCE2} %{SOURCE1} -
+# Stop doing this!!!
+#zcat %%{SOURCE0} | gpgv2 --quiet --keyring %%{SOURCE2} %%{SOURCE1} -
 
 # workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1217376
 export python_LDFLAGS=""
@@ -223,9 +221,6 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
-* Sat Mar 27 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.3.0-0
-- Update and ensure EL 7 compilation
-
 * Wed Mar 24 2021 Lukas Slebodnik <lslebodn@fedoraproject.org> - 2.3.0-1
 - libldb-2.3.0 is required for new samba
 
