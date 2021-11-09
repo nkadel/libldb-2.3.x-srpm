@@ -1,7 +1,7 @@
 %if ((0%{?fedora} || 0%{?rhel} > 7 || 0%{?epel} > 6))
 
 # lmdb is not supported on 32 bit architectures
-%ifarch aarch64 s390x x86_64
+%ifarch aarch64 ppc64le s390x x86_64
 %bcond_without lmdb
 %else
 %bcond_with lmdb
@@ -20,9 +20,9 @@
 %global tevent_version 0.11.0
 
 Name: libldb
-Version: 2.4.0
+Version: 2.4.1
 #Release: 1%%{?dist}
-Release: 0.1%{?dist}
+Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -33,6 +33,9 @@ Source0: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
 Source1: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.asc
 # gpg2 --no-default-keyring --keyring ./ldb.keyring --recv-keys 9147A339719518EE9011BCB54793916113084025
 Source2: ldb.keyring
+# binary diffs are not supported
+# https://gitlab.com/samba-team/samba/-/merge_requests/1920
+Source3: fixed-guidindexpackv1.ldb
 
 # Patches
 Patch0001: 0001-PATCH-wafsamba-Fix-few-SyntaxWarnings-caused-by-regu.patch
@@ -48,10 +51,10 @@ BuildRequires: popt-devel
 BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
 %if %{with python3}
-BuildRequires: python3-devel
-BuildRequires: python3-tdb
-BuildRequires: python3-talloc-devel
-BuildRequires: python3-tevent
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-tdb
+BuildRequires: python%{python3_pkgversion}-talloc-devel
+BuildRequires: python%{python3_pkgversion}-tevent
 #endif with python
 %endif
 BuildRequires: doxygen
@@ -95,38 +98,40 @@ Provides: pyldb-devel%{?_isa} = %{version}-%{release}
 
 %description -n python-ldb-devel-common
 Development files for the Python bindings for the LDB library.
-This package includes files that aren't specific to a Python version.
+This package includes files that are not specific to a Python version.
 
 %if %{with python3}
-%package -n python3-ldb
+%package -n python%{python3_pkgversion}-ldb
 Summary: Python bindings for the LDB library
 Requires: libldb%{?_isa} = %{version}-%{release}
-Requires: python3-tdb%{?_isa} >= %{tdb_version}
+Requires: python%{python3_pkgversion}-tdb%{?_isa} >= %{tdb_version}
 
-%{?python_provide:%python_provide python3-ldb}
+%{?python_provide:%python_provide python%{python3_pkgversion}-ldb}
 
-%description -n python3-ldb
+%description -n python%{python3_pkgversion}-ldb
 Python bindings for the LDB library
 
-%package -n python3-ldb-devel
+%package -n python%{python3_pkgversion}-ldb-devel
 Summary: Development files for the Python bindings for the LDB library
-Requires: python3-ldb%{?_isa} = %{version}-%{release}
+Requires: python%{python3_pkgversion}-ldb%{?_isa} = %{version}-%{release}
 Requires: python-ldb-devel-common%{?_isa} = %{version}-%{release}
 
-%{?python_provide:%python_provide python3-ldb-devel}
+%{?python_provide:%python_provide python%{python3_pkgversion}-ldb-devel}
 
-%description -n python3-ldb-devel
+%description -n python%{python3_pkgversion}-ldb-devel
 Development files for the Python bindings for the LDB library
 #endif with python
 %endif
 
 %prep
+# Stop doing this: it costs time energy for a local key, which has no provenance
+#zcat %{SOURCE0} | gpgv2 --quiet --keyring %{SOURCE2} %{SOURCE1} -
 %autosetup -n ldb-%{version} -p1
 
-%build
-# Stop doing this!!!
-#zcat %%{SOURCE0} | gpgv2 --quiet --keyring %%{SOURCE2} %%{SOURCE1} -
+# binary diffs are not supported
+cp -f %{SOURCE3} tests/guidindexpackv1.ldb
 
+%build
 # workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1217376
 export python_LDFLAGS=""
 
@@ -206,21 +211,39 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %{_mandir}/man*/Py*.gz
 
 %if %{with python3}
-%files -n python3-ldb
+%files -n python%{python3_pkgversion}-ldb
 %{python3_sitearch}/ldb.cpython-*.so
 %{_libdir}/libpyldb-util.cpython-*.so.2*
 %{python3_sitearch}/_ldb_text.py
 %{python3_sitearch}/__pycache__/_ldb_text.cpython-*.py*
 
-%files -n python3-ldb-devel
+%files -n python%{python3_pkgversion}-ldb-devel
 %{_libdir}/libpyldb-util.cpython-*.so
 %{_libdir}/pkgconfig/pyldb-util.cpython-*.pc
 
-%ldconfig_scriptlets -n python3-ldb
+%ldconfig_scriptlets -n python%{python3_pkgversion}-ldb
 #endif with python
 %endif
 
 %changelog
+* Fri Oct 29 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.4.1
+- Stop doing GPG check of tarball: the GPG signature is not RHEL 7 compatible
+- Update to 2.4.1
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Thu Jul 15 2021 Guenther Deschner <gdeschne@redhat.com> - 2.4.0-1
+- rhbz#1837364 - libldb-2.4.0 is available
+
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 2.3.0-3
+- Rebuilt for Python 3.10
+
+* Thu May 20 2021 Andreas Schneider <asn@redhat.com> - 2.3.0-2
+- Fix tests on aarch64
+- Verify signature in prep state
+- resolves: rhbz#1794307 - Build with lmbd support on ppc64le again
+
 * Wed Mar 24 2021 Lukas Slebodnik <lslebodn@fedoraproject.org> - 2.3.0-1
 - libldb-2.3.0 is required for new samba
 
@@ -320,7 +343,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 * Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.1-1
 - New upstream release 1.4.1
 - Apply a patch to hide local ABI symbols to avoid issues with new binutils
-- Patch the waf script to explicitly call python2 as "env python" doesn't
+- Patch the waf script to explicitly call python2 as "env python" does not
   yield py2 anymore
 
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.4.0-2
