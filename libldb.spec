@@ -16,11 +16,11 @@
 %bcond_without python3
 
 %global talloc_version 2.3.3
-%global tdb_version 1.4.5
+%global tdb_version 1.4.6
 %global tevent_version 0.11.0
 
 Name: libldb
-Version: 2.4.1
+Version: 2.5.0
 #Release: 1%%{?dist}
 Release: 0%{?dist}
 Summary: A schema-less, ldap like, API and database
@@ -226,6 +226,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Sat Feb 5 2022 Nico Kadel-Garcia <nkadel@gmail.com> - 2.5.0
+- Update to 2.5.0
+
 * Fri Oct 29 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.4.1
 - Stop doing GPG check of tarball: the GPG signature is not RHEL 7 compatible
 - Update to 2.4.1
