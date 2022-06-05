@@ -12,7 +12,7 @@ installed in the following order.
 	libtalloc-2.3.x-srpm
 	libtdb-1.4.x-srpm
 	libldb-2.5.x-srpm
-	libtevent-0.11.x-srpm
+	libtevent-0.12.x-srpm
 
 	samba-4.16.x-srpm
 
