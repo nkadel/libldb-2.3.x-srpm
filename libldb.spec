@@ -52,9 +52,9 @@ BuildRequires: libxslt
 BuildRequires: docbook-style-xsl
 %if %{with python3}
 BuildRequires: python%{python3_pkgversion}-devel
-BuildRequires: python%{python3_pkgversion}-tdb
-BuildRequires: python%{python3_pkgversion}-talloc-devel
-BuildRequires: python%{python3_pkgversion}-tevent
+BuildRequires: python%{python3_pkgversion}-tdb >= %{tdb_version}
+BuildRequires: python%{python3_pkgversion}-talloc-devel >= %{talloc_version}
+BuildRequires: python%{python3_pkgversion}-tevent >= %{tevent_version}
 #endif with python
 %endif
 BuildRequires: doxygen
