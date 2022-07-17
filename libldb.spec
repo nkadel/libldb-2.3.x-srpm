@@ -15,14 +15,13 @@
 
 %bcond_without python3
 
-%global talloc_version 2.3.4
-%global tdb_version 1.4.7
-%global tevent_version 0.12.1
+%global talloc_version 2.3.3
+%global tdb_version 1.4.6
+%global tevent_version 0.11.0
 
 Name: libldb
-Version: 2.5.1
-#Release: 1%%{?dist}
-Release: 1.1%{?dist}
+Version: 2.5.0
+Release: 1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
@@ -98,7 +97,7 @@ Provides: pyldb-devel%{?_isa} = %{version}-%{release}
 
 %description -n python-ldb-devel-common
 Development files for the Python bindings for the LDB library.
-This package includes files that are not specific to a Python version.
+This package includes files that aren't specific to a Python version.
 
 %if %{with python3}
 %package -n python%{python3_pkgversion}-ldb
@@ -124,8 +123,7 @@ Development files for the Python bindings for the LDB library
 %endif
 
 %prep
-# Stop doing this: it costs time energy for a local key, which has no provenance
-#zcat %{SOURCE0} | gpgv2 --quiet --keyring %{SOURCE2} %{SOURCE1} -
+zcat %{SOURCE0} | gpgv2 --quiet --keyring %{SOURCE2} %{SOURCE1} -
 %autosetup -n ldb-%{version} -p1
 
 # binary diffs are not supported
@@ -226,12 +224,14 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
-* Sat Feb 5 2022 Nico Kadel-Garcia <nkadel@gmail.com> - 2.5.0
-- Update to 2.5.0
+* Tue Jan 25 2022 Pavel Filipenský <pfilipen@redhat.com> - 2.4.5-1
+- rhbz#2044382 - libldb-2.5.0 is available
 
-* Fri Oct 29 2021 Nico Kadel-Garcia <nkadel@gmail.com> - 2.4.1
-- Stop doing GPG check of tarball: the GPG signature is not RHEL 7 compatible
-- Update to 2.4.1
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Oct 28 2021 Guenther Deschner <gdeschne@redhat.com> - 2.4.1-1
+- rhbz#2017790 - libldb-2.4.1 is available
 
 * Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
@@ -346,7 +346,7 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 * Thu Jul 12 2018 Jakub Hrozek <jhrozek@redhat.com> - 1.4.1-1
 - New upstream release 1.4.1
 - Apply a patch to hide local ABI symbols to avoid issues with new binutils
-- Patch the waf script to explicitly call python2 as "env python" does not
+- Patch the waf script to explicitly call python2 as "env python" doesn't
   yield py2 anymore
 
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 1.4.0-2
