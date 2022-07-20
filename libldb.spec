@@ -20,8 +20,8 @@
 %global tevent_version 0.11.0
 
 Name: libldb
-Version: 2.5.0
-Release: 1%{?dist}
+Version: 2.5.1
+Release: 1.1%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
 Requires: libtdb%{?_isa} >= %{tdb_version}
