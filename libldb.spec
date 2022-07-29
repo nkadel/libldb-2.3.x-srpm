@@ -20,7 +20,7 @@
 %global tevent_version 0.13.0
 
 Name: libldb
-Version: 2.5.1
+Version: 2.6.1
 Release: 1.2%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
@@ -37,7 +37,7 @@ Source2: ldb.keyring
 Source3: fixed-guidindexpackv1.ldb
 
 # Patches
-Patch0001: 0001-PATCH-wafsamba-Fix-few-SyntaxWarnings-caused-by-regu.patch
+#Patch0001: 0001-PATCH-wafsamba-Fix-few-SyntaxWarnings-caused-by-regu.patch
 
 BuildRequires: gcc
 BuildRequires: libtalloc-devel >= %{talloc_version}
