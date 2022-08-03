@@ -28,8 +28,8 @@ Requires: libtdb%{?_isa} >= %{tdb_version}
 Requires: libtevent%{?_isa} >= %{tevent_version}
 License: LGPLv3+
 URL: http://ldb.samba.org/
-Source0: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.gz
-Source1: https://www.samba.org/ftp/ldb/ldb-%{version}.tar.asc
+Source0: https://download.samba.org/pub/ldb/ldb-%{version}.tar.gz
+Source1: https://download.samba.org/pub//ldb/ldb-%{version}.tar.asc
 # gpg2 --no-default-keyring --keyring ./ldb.keyring --recv-keys 9147A339719518EE9011BCB54793916113084025
 Source2: ldb.keyring
 # binary diffs are not supported
