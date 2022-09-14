@@ -1,4 +1,4 @@
-libldb-2.5.x-srpm
+libldb-2.6.x-srpm
 =================
 
 SRPM building tools for libldb-2.5.x for runing Samba 4 on RHEL and Fedora
@@ -11,10 +11,10 @@ installed in the following order.
 
 	libtalloc-2.3.x-srpm
 	libtdb-1.4.x-srpm
-	libldb-2.5.x-srpm
+	libldb-2.x.x-srpm
 	libtevent-0.12.x-srpm
 
-	samba-4.16.x-srpm
+	samba-4.17.x-srpm
 
 The "make" command will do these steps.
 
