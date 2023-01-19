@@ -15,12 +15,12 @@
 
 %bcond_without python3
 
-%global talloc_version 2.3.3
-%global tdb_version 1.4.6
-%global tevent_version 0.13.0
+%global talloc_version 2.4.0
+%global tdb_version 1.4.8
+%global tevent_version 0.14.0
 
 Name: libldb
-Version: 2.6.1
+Version: 2.7.0
 Release: 1.3%{?dist}
 Summary: A schema-less, ldap like, API and database
 Requires: libtalloc%{?_isa} >= %{talloc_version}
@@ -224,6 +224,9 @@ rm -f $RPM_BUILD_ROOT/%{_mandir}/man3/_*
 %endif
 
 %changelog
+* Thu Jan 19 2023 Nico Kadel-Garcia <nkadel@gmail.com> - 2.7.0-0.1
+- Update to 2.7.0
+
 * Tue Jan 25 2022 Pavel Filipenský <pfilipen@redhat.com> - 2.4.5-1
 - rhbz#2044382 - libldb-2.5.0 is available
 
